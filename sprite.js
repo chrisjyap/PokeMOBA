@@ -14,14 +14,14 @@
 			switch(dir){
 /* ** Down ** */        	case 'DOWN':
                                 currHFrame = 3;
-                                y +=5;
+                                y +=1;
                                 if(currWFrame != 1) currWFrame ++;
                                 else currWFrame --;
                                 break;
 
 /* ** Up ** */                  case 'UP':
                                 currHFrame = 1;
-                                y-= 5;
+                                y-= 1;
                                 if(currWFrame != 1) currWFrame ++;
                                 else currWFrame --;
                                 //console.log(currWFrame);
@@ -29,14 +29,14 @@
 
 /* ** Left ** */                case 'LEFT':
                                 currHFrame = 0;
-                                x -=5;
+                                x -=1;
                                 if(currWFrame != 1) currWFrame ++;
                                 else currWFrame --;
                                 break;
 
 /* ** Right ** */               case 'RIGHT':
                                 currHFrame = 2;
-                                x += 5;
+                                x += 1;
                                 if(currWFrame != 1) currWFrame ++;
                                 else currWFrame --;
                                 break;
@@ -45,26 +45,35 @@
                                 //console.log("not arrow key");
 			};
 		};
+/* ** CLEAR  ** */
+                this.clear = function(context){
+                        context.clearRect(x-5, y- 5, 60, 60);
+                };
+/* ** RENDER ** */
+                this.render = function(context){
+                        context.drawImage(pokeSprite,
+                                          this.frameWidth * currWFrame,
+                                          this.frameHeight * currHFrame,
+                                          this.frameWidth, this.frameHeight,
+                                          x, y,
+                                          this.frameWidth, this.frameHeight);
+                };
+
 /* ** UPDATE ATKS ** */ 
 		this.updateAttacks = function(){
-			if(attacks.length >0){
-				for(var i = 0; i< attacks.length; i++) attacks[i].update();
-				
-			}
+			if(attacks.length >0) for(var i = 0; i< attacks.length; i++) attacks[i].update();
 		};
-/* ** CLEAR  ** */
-		this.clear = function(context){
-			context.clearRect(x-5, y- 5, 60, 60);
+/* ** CLEAR ATKS ** */
+		this.clearAttacks = function(context){
+			if(attacks.length >0) for(var i = 0; i< attacks.length; i++) attacks[i].clear(context);
 		};
-/* ** RENDER ** */
-		this.render = function(context){
-			context.drawImage(pokeSprite, 
-					  this.frameWidth * currWFrame, 
-					  this.frameHeight * currHFrame, 
-				 	  this.frameWidth, this.frameHeight, 
-					  x, y, 
-					  this.frameWidth, this.frameHeight); 
+/* ** RENDER ATKS ** */
+		this.renderAttacks= function(context){
+			if(attacks.length >0) for(var i = 0; i< attacks.length; i++) attacks[i].render(context);
 		};
+/* ** ADD ATTACK  ** */
+		this.addAttack = function(moveSprite){	attacks.push(moveSprite); };
+
 /* ** GETTERS ** */
 		this.getX = function(){ return x; }
 		this.getY = function(){ return y; }

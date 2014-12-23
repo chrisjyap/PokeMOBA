@@ -1,26 +1,27 @@
 (function(){ 
 	function MoveSprite(image, startX, startY){
-		this.frameWidth = 50;
-		this.frameHeight= 50;
-		var currWFrame = 0, pokeSprite = image,
-			x = startX, y = startY;
+		this.frameWidth = 40;
+		this.frameHeight= 30;
+		var currWFrame = 0, myImage = image,
+			x = startX+ 35, y = startY;
 /* ** UPDATE ** */
 		this.update = function(){
-			x += 10;
-			currWFrame = Math.floor(Math.Random() * 2);
+			x += 2;
+			currWFrame = Math.floor(Math.random() * 2);
 		};
 /* ** CLEAR  ** */
 		this.clear = function(context){
-			context.clearRect(x-5, y- 5, 60, 60);
+			context.clearRect(x-5, y- 5, 40, 30);
 		};
 /* ** RENDER ** */
 		this.render = function(context){
-			context.drawImage(pokeSprite, 
+			context.drawImage(myImage, 
 					  this.frameWidth * currWFrame, 
-					  this.frameHeight, 
+					  0, 
 				 	  this.frameWidth, this.frameHeight, 
 					  x, y, 
 					  this.frameWidth, this.frameHeight); 
+			//console.log('drawing: ' + x + ', ' + y + ' image: ' + image.src);
 		};
 	};
 

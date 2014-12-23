@@ -2,7 +2,7 @@ var canvas,ctx, sprite;
 const imagePath = './images/charmanderSprite.png';
 const atkSprPath= './images/attacks/fireAtkSprite.png';
 const bgPath = './images/pokeArena.png';
-var startTime, currTime, elaspedTime = 0;
+var startTime, currTime, elapsedTime = 0;
 
 var startX = 50,
 	startY = 50,
@@ -20,42 +20,57 @@ $(document).ready(function(){
 	testImage.onload = function(){
 	        sprite = new Sprite(testImage, startX, startY);
 		renderField(ctx, sprite, background);
-		addEventHandler(document.body, sprite);
+		main();
 	};
 	testImage.src = imagePath;
-	setInterval(updateTime, 60);
 });
 
-function addEventHandler(ele, sprite){
-	ele.addEventListener('keydown', function(e){
-		var keyPressed = getKey(e);
-		console.log(keyPressed);
-		if(currTime >= 60 && keyPressed != 'Q'){
-			//console.log("Key: " + sprite.pokeSprite);
-			sprite.update(keyPressed);
-			renderField(ctx, sprite, background);
-			currTime = 0;
-			startTime= Date.now();
-		}else if( keyPressed == 'Q'){
-			console.log("here!: " + sprite.getX());
-			var attackImg = new Image();
-			var moveSprite;
-			attackImg.onload = function(){
-				moveSprite = new MoveSprite(attackImg, sprite.getX(), sprite.getY());
-			};
-			attackImg.src = atkSprPath;
-		}
-	}, false);
+function main(){
+	inputHandler(sprite);
+	renderField(ctx, sprite, background);
+	requestAnimFrame(main);
+};
+
+var requestAnimFrame = (function(){
+    return window.requestAnimationFrame    ||
+        window.webkitRequestAnimationFrame ||
+        window.mozRequestAnimationFrame    ||
+        window.oRequestAnimationFrame      ||
+        window.msRequestAnimationFrame     ||
+        function(callback){
+            window.setTimeout(callback, 1000 / 60);
+        };
+})();
+
+
+function inputHandler(sprite){
+	if(input.isDown('DOWN')) sprite.update('DOWN');
+	if(input.isDown('UP')) sprite.update('UP');
+	if(input.isDown('LEFT')) sprite.update('LEFT');
+	if(input.isDown('RIGHT')) sprite.update('RIGHT');
+	if(input.isDown('Q') && elapsedTime >= 65){
+                var attackImg = new Image();
+                var moveSprite;
+                attackImg.onload = function(){
+                        moveSprite = new MoveSprite(attackImg, sprite.getX(), sprite.getY());
+			sprite.addAttack(moveSprite);
+		};
+                attackImg.src = atkSprPath;	
+	}
+	sprite.updateAttacks();
 }
 
 function renderField(context, sprite, background){
-	sprite.clear(context);
-	context.drawImage(background, 0,0);
-	sprite.render(context);
+	var fps = 17;
+	currTime = Date.now();
+	elapsedTime = currTime - startTime;
+	if( elapsedTime > (1000/fps)){
+		sprite.clear(context);
+		sprite.clearAttacks(context);
+		context.drawImage(background, 0,0);
+		sprite.render(context);
+		sprite.renderAttacks(context);
+		startTime = currTime - (elapsedTime % (1000/fps));
+	}
+	//console.log("Start: " + startTime + " Current: " + currTime + " Elapsed Time: " + elapsedTime);
 }
-
-function updateTime(){
-	var endTime = Date.now();
-	currTime = endTime - startTime;
-}
-

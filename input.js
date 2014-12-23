@@ -1,5 +1,6 @@
 //(function(){
-    function getKey(event) {
+    var pressedKeys ={};
+    function getKey(event, status) {
 	var code = event.keyCode;
         var key;
 
@@ -17,17 +18,16 @@
             key = String.fromCharCode(code);
         }
 
-       	//pressedKeys[key] = status;
-	return key;
+       	pressedKeys[key] = status;
 }
-/*
+
     document.addEventListener('keydown', function(e) {
-        setKey(e, true);
-	console.log("Works");
+        getKey(e, true);
+	//console.log("Works");
     });
 
     document.addEventListener('keyup', function(e) {
-        setKey(e, false);
+        getKey(e, false);
     });
 
     window.addEventListener('blur', function() {
@@ -39,5 +39,5 @@
             return pressedKeys[key.toUpperCase()];
         }
     };
-*/
+
 //})();
