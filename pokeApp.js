@@ -1,12 +1,11 @@
-var canvas,ctx, sprite; 
-const imagePath = './images/charmanderSprite.png';
+var canvas,ctx, sprite, sprite2; 
+//const imagePath = './images/charmanderSprite.png';
 const atkSprPath= './images/attacks/fireAtkSprite.png';
 const bgPath = './images/pokeArena.png';
 var startTime, currTime, elapsedTime = 0;
 
-var startX = 50,
-	startY = 50,
-	testImage,
+var startX = 120,
+	startY = 240,
 	background;
 
 $(document).ready(function(){
@@ -16,18 +15,16 @@ $(document).ready(function(){
 	canvas = document.getElementById("pokeCanvas");
 	canvas.style.paddingLeft = window.innerWidth/4 + "px";
 	ctx = canvas.getContext("2d");
-	testImage = new Image();
-	testImage.onload = function(){
-	        sprite = new Sprite(testImage, startX, startY);
-		renderField(ctx, sprite, background);
-		main();
-	};
-	testImage.src = imagePath;
+	sprite = new Sprite('charmander', startX, startY);
+	sprite2= new Sprite('squirtle', 590, 240);
+	renderField(ctx, sprite, sprite2, background);
+	main();
 });
 
 function main(){
-	inputHandler(sprite);
-	renderField(ctx, sprite, background);
+	collisionDetect(sprite);
+	input.inputHandler(sprite);
+	renderField(ctx, sprite, sprite2, background);
 	requestAnimFrame(main);
 };
 
@@ -42,26 +39,8 @@ var requestAnimFrame = (function(){
         };
 })();
 
-
-function inputHandler(sprite){
-	if(input.isDown('DOWN')) sprite.update('DOWN');
-	if(input.isDown('UP')) sprite.update('UP');
-	if(input.isDown('LEFT')) sprite.update('LEFT');
-	if(input.isDown('RIGHT')) sprite.update('RIGHT');
-	if(input.isDown('Q') && elapsedTime >= 65){
-                var attackImg = new Image();
-                var moveSprite;
-                attackImg.onload = function(){
-                        moveSprite = new MoveSprite(attackImg, sprite.getX(), sprite.getY());
-			sprite.addAttack(moveSprite);
-		};
-                attackImg.src = atkSprPath;	
-	}
-	sprite.updateAttacks();
-}
-
-function renderField(context, sprite, background){
-	var fps = 17;
+function renderField(context, sprite, sprite2, background){
+	var fps = 16;
 	currTime = Date.now();
 	elapsedTime = currTime - startTime;
 	if( elapsedTime > (1000/fps)){
@@ -69,8 +48,14 @@ function renderField(context, sprite, background){
 		sprite.clearAttacks(context);
 		context.drawImage(background, 0,0);
 		sprite.render(context);
+		sprite2.render(context);
 		sprite.renderAttacks(context);
 		startTime = currTime - (elapsedTime % (1000/fps));
 	}
 	//console.log("Start: " + startTime + " Current: " + currTime + " Elapsed Time: " + elapsedTime);
+}
+
+function collisionDetect(sprite){
+	sprite.checkAttacks();	
+
 }
